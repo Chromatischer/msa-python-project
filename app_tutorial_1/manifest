@@ -1,0 +1,10 @@
+[app]
+name: Test
+category: Tests
+icon: icon.png
+desc: TXT app tutorial #1
+exec: test.py
+managed: yes
+uuid: 71c7b3b0-aae1-11ed-b9d9-0800200c9a66
+version: 1.0
+firmware: 0.9.0
