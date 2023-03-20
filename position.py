@@ -21,3 +21,7 @@ class Position:
         self._pos['m2'] = m2
         self._pos['m3'] = m3
         self._pos['m4'] = m4
+
+    def get_str(self):
+        string: str = 'm1: [' + str(self._pos['m1']) + '] m2: [' + str(self._pos['m2']) + '] m3: [' + str(self._pos['m3']) + '] m4: [' + str(self._pos['m4']) + ']'
+        return string
