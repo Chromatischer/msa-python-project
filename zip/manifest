@@ -1,0 +1,11 @@
+[app]
+name: saving_shit
+category: Tests
+author: Joe Developer
+icon: icon.png
+desc: My own thing
+exec: saving-the-shit-out-of-you.py
+managed: yes
+uuid: 414262d0-ccb5-11ed-a901-0800200c9a66
+version: 1.0
+firmware: 0.9

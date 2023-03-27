@@ -1,0 +1,11 @@
+[app]
+name: upload_test
+category: Tests
+author: Die Chr1m
+icon: icon.png
+desc: My own thing
+exec: upload_test.py
+managed: yes
+uuid: b75137d0-ccba-11ed-a901-0800200c9a66
+version: 1.0
+firmware: 0.9

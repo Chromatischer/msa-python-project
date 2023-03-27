@@ -5,6 +5,7 @@ import sys
 import ftrobopy
 from TouchStyle import *
 
+
 class FtcGuiApplication(TouchApplication):
     global M
     global I
@@ -57,8 +58,6 @@ class FtcGuiApplication(TouchApplication):
             self.on_timed_event_executor = QTimer(self)
             self.on_timed_event_executor.timeout.connect(self.on_timed_execution)
             self.on_timed_event_executor.start(1)
-
-
 
         w.show()
         self.exec_()
