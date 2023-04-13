@@ -26,7 +26,7 @@
             ```
             - Angepingt unter:
             ```python
-            txt = ftrobopy.ftrobopy('192.186.7.2', 65000) #Standart fuer USB connection
+            ft_txt = ftrobopy.ftrobopy('192.186.7.2', 65000) #Standart fuer USB connection
             ```
             - Problem auf morgen verschoben
 - 27.11.22

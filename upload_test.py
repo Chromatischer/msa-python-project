@@ -7,11 +7,47 @@ from datetime import datetime
 from TouchStyle import *
 
 
+def flush_write_buffer():
+    global write_buffer_other
+    global write_buffer_data
+    global txt
+    global textfield_other
+    global textfield_data
+
+    if textfield_other.text() != write_buffer_other:
+        textfield_other.setText(write_buffer_other)
+
+
+txt = None
+write_buffer_other = None
+write_buffer_data = None
+
+textfield_other = None
+textfield_data = None
+
+m1 = None
+m2 = None
+m2_counter = 0
+i5 = None
+m3 = None
+m4 = None
+
+
 class FtcGuiApplication(TouchApplication):
     ftc_gui_window: TouchWindow
-    other: QLabel
 
     def __init__(self, args):
+
+        global txt
+        global write_buffer_data
+        global write_buffer_other
+        global textfield_other
+        global textfield_data
+        global m1
+        global m2
+        global m3
+        global m4
+
         print("initializing FtcGuiApplication")
         TouchApplication.__init__(self, args)
 
@@ -44,14 +80,29 @@ class FtcGuiApplication(TouchApplication):
         else:
             print("connection established with device: ", str(txt.getDevicename()), " at port: ", str(txt.getPort()),
                   " running version: ", str(txt.getVersionNumber()))
-            normal = QLabel("working hard fucking retard")
-            normal.setWordWrap(True)
-            normal.setAlignment(Qt.AlignCenter)
-            ftc_gui_window.setCentralWidget(normal)
-            FtcGuiApplication.other = QLabel("test")
-            ftc_gui_window.setCentralWidget(FtcGuiApplication.other)
-            current_time = datetime.now().strftime("%H:%M:%S")
-            FtcGuiApplication.other.setText(current_time)
+            print("---------------------------------------------------------------------------------------------------")
+
+            textfield_other = QLabel("empty")
+            textfield_other.setAlignment(Qt.AlignCenter)
+            textfield_other.setWordWrap(True)
+            ftc_gui_window.setCentralWidget(textfield_other)
+
+            textfield_data = QLabel("data")
+            textfield_data.setAlignment(Qt.AlignTop)
+
+            self.update_text = QTimer(self)  # create a timer
+            self.update_text.timeout.connect(flush_write_buffer)  # connect timer to on_timer slot
+            self.update_text.start(1000)  # fire timer every 1000ms or 1Hz
+
+            print("initializing motor objects: 0%")
+            m1 = txt.motor(1)
+            print("initializing motor objects: 25%")
+            m2 = txt.motor(2)
+            print("initializing motor objects: 50%")
+            m3 = txt.motor(3)
+            print("initializing motor objects: 75%")
+            m4 = txt.motor(4)
+            print("initializing motor objects: 100%")
 
             create_thread_using_runnable()
 
@@ -61,25 +112,71 @@ class FtcGuiApplication(TouchApplication):
 
 class Runnable(QRunnable):
     def run(self):
-        print("running")
+        print("running 100%")
+
+        global txt
+        global write_buffer_other
+        global m1
+        global m2
+        global m3
+        global m4
+        global m2_counter
+
+        if txt:
+            m2.setSpeed(512)
+            print()
         while True:
             current_time = datetime.now().strftime("%H:%M:%S")
+            txt.resistor(5)
+            # print(txt.getCurrentInput(4))
+            if txt:
+                motpos1 = m2_counter
+                write_buffer_other = str(motpos1)
+
+                if txt.getCurrentInput(4) > 7390:
+                    m2_counter += 1
+                    print("1")
+                    while not txt.getCurrentInput(4) < 7390:
+                        pass
+                    print("0")
+
+
+                    # txt.motor(1).setDistance(100)
             # print(FtcGuiApplication.other)
-            FtcGuiApplication.other.setText(current_time)
+
+
+class RunnableUpdateM2Distance(QRunnable):
+    def run(self):
+        print("I was called once upon a time!")
+        global txt
+        global write_buffer_other
+        global m1
+        global m2
+        global m3
+        global m4
+        global i5
+        global m2_counter
+
+        if txt:
+            i5 = txt.resistor(5)
+            print("test Runable Upater Running!")
+
 
 
 def create_thread_using_runnable():
-    print("creating thread")
-    # I have no fucking idea, why this throws errors like crazy, but it does and I dont give a f
+    print("creating thread", end="\r")
+    # I have no fucking idea, why this throws errors like crazy, but it does and I don't give a f
     # app = QCoreApplication([])
-    print("app set up!")
+    print("app set up! 25%", end="\r")
     runnable = Runnable()
-    print("runnable obj created")
+    runnable_update = RunnableUpdateM2Distance()
+    print("runnable obj created 50%", end="\r")
     QThreadPool.globalInstance().start(runnable)
-    print("running runnable obj")
-    # system.exit(app.exec_())
+    QThreadPool.globalInstance().start(runnable_update)
+    print("running runnable obj 75%", end="\r")
+    # sys.exit(app.exec_())
 
 
 if __name__ == "__main__":
-    print("main")
+    print("starting program!")
     application = FtcGuiApplication(sys.argv)
