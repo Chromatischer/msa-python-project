@@ -229,6 +229,8 @@
       - schreiben des Programms: ```Countertest.py``` zum Testen der Counterfunktion des TXT! (Fehler lag in der Verkabelung, des Counter-motors siehe Foto → dort Beispiel richtig)
       - created pull-request: [247](https://github.com/ftCommunity/ftcommunity-TXT/pull/247) on Github to be reviewed!
 ## Andere wichtge Infos:
+  python qt test recherge website:
+   - https://docs.python.org/3/library/unittest.html
 ### Hardware:
 zum Verkabeln eines Zaehlermotors mit dem TXT muss das Rote-Kabel an 9V angeschlossen werden, das Schwarze-Kabel kommt an den C1-Port, NICHT DER MIT **T** das Gruene-Kabel kommt an den Masse anschluss (T) 
 ## Programmausschnitte:

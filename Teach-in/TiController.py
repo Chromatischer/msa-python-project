@@ -4,6 +4,7 @@
 from TouchStyle import *
 from InputMethode import *
 from TiModel import *
+from TxtStickInput import *
 
 inputMethode = InputMethode("joystick")
 
@@ -14,7 +15,8 @@ tiModel = None
 class TiController(QRunnable):
     @staticmethod
     def getJoystickInput():
-        pass
+        global txt
+        txtstinp = TxtStickInput(txt)
 
     @staticmethod
     def getFileInput():
