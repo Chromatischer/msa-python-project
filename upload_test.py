@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import ftrobopy
+from ftrobopy import *
 from datetime import datetime
 from TouchStyle import *
 
