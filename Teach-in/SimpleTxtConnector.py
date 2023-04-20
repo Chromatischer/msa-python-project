@@ -7,6 +7,7 @@ from ftrobopy import *
 class SimpleTxtConnector:
 
     def __init__(self):
+        self.txt: ftrobopy
         try:
             print("trying to connect to localhost")
             self.txt = ftrobopy('localhost', 65000, False, True)
@@ -26,3 +27,10 @@ class SimpleTxtConnector:
 
         if not self.txt:
             raise ConnectionRefusedError("cant connect to txt!")
+        else:
+            self.txt: ftrobopy
+
+    #   if not self.txt.getPower() > 7900:
+    #       raise OSError("input voltage to low! Switch battery immediately!")
+    #   else:
+    #       print(self.txt.getPower())

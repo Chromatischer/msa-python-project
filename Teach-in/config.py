@@ -2,10 +2,10 @@ from ftrobopy import *
 
 
 class ConfigPy:
-    speedM1 = 100
-    speedM2 = 100
-    speedM3 = 100
-    speedM4 = 100
+    speedM1 = 512
+    speedM2 = 512
+    speedM3 = 512
+    speedM4 = 512
 
     @staticmethod
     def set_default_config(txt: ftrobopy):
