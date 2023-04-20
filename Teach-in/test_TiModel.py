@@ -15,4 +15,5 @@ if __name__ == "__main__":
 
     timodel.TestMotors.TestReset.m1()
     timodel.TestMotors.TestReset.m2()
+    timodel.TestMotors.TestReset.m3()
     timodel.TestMotors.TestReset.m4()

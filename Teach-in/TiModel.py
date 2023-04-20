@@ -240,7 +240,31 @@ class TiModel:
             def m3():
                 print("resetting m3!")
                 m3 = txt.motor(3)
-                print("not jet implemented!")
+                if not txt.input(4).state():
+                    print("switch state false!")
+                    m3.setSpeed(ConfigPy.speedM3)
+                    txt.updateWait(0.6)
+                    print("waited 0.6s whilst moving")
+                    if not txt.input(4).state():
+                        print("switch state false! moving outwards")
+                        m3.setSpeed(-ConfigPy.speedM3)
+                    while not txt.input(4).state():
+                        pass
+                    print("switch state true: EXITING")
+                elif txt.input(4).state():
+                    print("switch state true!")
+                    m3.setSpeed(ConfigPy.speedM3)
+                    while txt.input(4).state():
+                        pass
+                    print("switch state false: RESETTING")
+                    m3.stop()
+                    m3.setSpeed(-ConfigPy.speedM3)
+                    while not txt.input(4).state():
+                        pass
+                    print("switch state true: EXITING")
+
+                m3.stop()
+                print("resetting m3: DONE")
 
             @staticmethod
             def m4():
