@@ -7,14 +7,13 @@ from ftrobopy import *
 class SimpleTxtConnector:
 
     def __init__(self):
-        self.txt: ftrobopy
+        self.txt = None
         try:
             print("trying to connect to localhost")
-            self.txt = ftrobopy('localhost', 65000, False, True)
+            self.txt = ftrobopy('localhost', 65000, False, use_TransferAreaMode=True)
 
-        except (TimeoutError, ConnectionRefusedError) as error:
+        except (TimeoutError, ConnectionRefusedError, NameError) as error:
             print("failed to connect to localhost: ", error)
-            self.txt = None
 
         if not self.txt:
             try:
@@ -23,7 +22,6 @@ class SimpleTxtConnector:
 
             except (TimeoutError, ConnectionRefusedError) as error:
                 print("failed to connect to W-lan host: ", error)
-                self.txt = None
 
         if not self.txt:
             raise ConnectionRefusedError("cant connect to txt!")

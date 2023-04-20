@@ -62,61 +62,77 @@ class TiModel:
             pass
 
         class DirectControl:
-            """
-            allows for direct controll of the motors without having any safety installed! Careful it may be harmful!
+            class Unsafe:
 
-            **DO NOT USE** (except for debugging)
+                @staticmethod
+                def move_m1(p: float):
+                    """
+                    moves the motor m1 with the speed in the ConfigPy multiplied by the param p!
+                    :param p: the multiplicator by wich the config Speed will be multiplied
+                    """
 
-            **USE: MovementAgent.move_<xyz>()**
-            """
+                    if p > 1 or p < -1:
+                        raise ValueError("input param p is out of bounds for value range -1.0 - 1.0")
+                    else:
+                        txt.motor(1).setSpeed(round(ConfigPy.speedM1 * p))
 
-            @staticmethod
-            def move_m1(p: float):
-                """
-                moves the motor m1 with the speed in the ConfigPy multiplied by the param p!
-                :param p: the multiplicator by wich the config Speed will be multiplied
-                """
+                @staticmethod
+                def move_m2(p: float):
+                    """
+                    moves the motor m2 with the speed in the ConfigPy multiplied by the param p!
+                    :param p: the multiplicator by wich the config Speed will be multiplied
+                    """
 
-                if p > 1 or p < -1:
-                    raise ValueError("input param p is out of bounds for value range -1.0 - 1.0")
-                else:
-                    txt.motor(1).setSpeed(round(ConfigPy.speedM1 * p))
+                    if p > 1 or p < -1:
+                        raise ValueError("input param p is out of bounds for value range -1.0 - 1.0")
+                    else:
+                        txt.motor(2).setSpeed(round(ConfigPy.speedM2 * p))
 
-            @staticmethod
-            def move_m2(p: float):
-                """
-                moves the motor m2 with the speed in the ConfigPy multiplied by the param p!
-                :param p: the multiplicator by wich the config Speed will be multiplied
-                """
+                @staticmethod
+                def move_m3(p: float):
+                    """
+                    moves the motor m3 with the speed in the ConfigPy multiplied by the param p!
+                    :param p: the multiplicator by wich the config Speed will be multiplied
+                    """
 
-                if p > 1 or p < -1:
-                    raise ValueError("input param p is out of bounds for value range -1.0 - 1.0")
-                else:
-                    txt.motor(2).setSpeed(round(ConfigPy.speedM2 * p))
+                    if p > 1 or p < -1:
+                        raise ValueError("input param p is out of bounds for value range -1.0 - 1.0")
+                    else:
+                        txt.motor(3).setSpeed(round(ConfigPy.speedM3 * p))
 
-            @staticmethod
-            def move_m3(p: float):
-                """
-                moves the motor m3 with the speed in the ConfigPy multiplied by the param p!
-                :param p: the multiplicator by wich the config Speed will be multiplied
-                """
+                @staticmethod
+                def move_m4(p: float):
+                    """
+                    moves the motor m4 with the speed in the ConfigPy multiplied by the param p!
+                    :param p: the multiplicator by wich the config Speed will be multiplied
+                    """
 
-                if p > 1 or p < -1:
-                    raise ValueError("input param p is out of bounds for value range -1.0 - 1.0")
-                else:
-                    txt.motor(3).setSpeed(round(ConfigPy.speedM3 * p))
+                    if p > 1 or p < -1:
+                        raise ValueError("input param p is out of bounds for value range -1.0 - 1.0")
+                    else:
+                        txt.motor(4).setSpeed(round(ConfigPy.speedM4 * p))
 
-            @staticmethod
-            def move_m4(p: float):
-                """
-                moves the motor m4 with the speed in the ConfigPy multiplied by the param p!
-                :param p: the multiplicator by wich the config Speed will be multiplied
-                """
-
-                if p > 1 or p < -1:
-                    raise ValueError("input param p is out of bounds for value range -1.0 - 1.0")
-                else:
-                    txt.motor(4).setSpeed(round(ConfigPy.speedM4 * p))
+            class Safe:
+                @staticmethod
+                def move_m1(p: float):
+                    if p > 1 or p < -1:
+                        raise ValueError("input param p is out of bounds for value range -1.0 - 1.0")
+                    else:
+                        if p > 0:
+                            if not txt.input(3).state():
+                                print("moving m1! speed: ", round(ConfigPy.speedM1 * p))
+                                txt.motor(1).setSpeed(round(ConfigPy.speedM1 * p))
+                            else:
+                                print("not moving m1 because: stop switch state: ", bool(txt.input(3).state()))
+                        elif p < 0:
+                            if not txt.motor(1).getCurrentDistance() > 1000:
+                                print("moving m1! speed: ", round(ConfigPy.speedM1 * p))
+                                txt.motor(1).setSpeed(round(ConfigPy.speedM1 * p))
+                            else:
+                                print("not moving m1 because: current counter value: ", txt.motor(1).getCurrentDistance())
+                        else:
+                            txt.motor(1).stop()
+                            print("stopped motor because: p ==", p)
 
     class TestMotors:
         global txt
