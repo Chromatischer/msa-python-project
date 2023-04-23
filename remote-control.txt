@@ -1,0 +1,14 @@
+FERNBEDIENUNG - TeachIn System
+
+Steuerung des Models mit der Fernbedienung:
+
+
+
+     hoch                               vor
+                    save  end
+  zu ( ) auf         .     .      links ( ) rechts
+
+    runter                            zurück
+
+
+
