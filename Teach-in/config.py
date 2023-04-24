@@ -2,10 +2,15 @@ from ftrobopy import *
 
 
 class ConfigPy:
-    speedM1 = 512
-    speedM2 = 512
-    speedM3 = 512
-    speedM4 = 512
+    min_speed_m1 = 410
+    max_speed_m1 = 512
+    min_speed_m2 = 0
+    max_speed_m2 = 512
+    min_speed_m3 = 0
+    max_speed_m3 = 512
+    min_speed_m4 = 300
+    max_speed_m4 = 100
+
 
     @staticmethod
     def set_default_config(txt: ftrobopy):

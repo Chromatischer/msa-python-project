@@ -5,10 +5,17 @@ if __name__ == "__main__":
     stxtc = SimpleTxtConnector()
     ftxt = stxtc.txt
     timodel = TiModel(ftxt)
-    #while True:
-    #    print(ftxt.resistor(5).value())
+    last = 0
 
-    timodel.TestMotors.TestCounters.m1()
+    timodel.TestMotors.TestReset.m1()
+    print(timodel.getCounterValue(1))
+    while True:
+        if timodel.getCounterValue(1) != last:
+            print(timodel.getCounterValue(1))
+            last = timodel.getCounterValue(1)
+        timodel.MovementAgent.DirectControl.Safe.m1(-1)
+
+
     timodel.TestMotors.TestCounters.m2()
     timodel.TestMotors.TestCounters.m3()
     timodel.TestMotors.TestCounters.m4()

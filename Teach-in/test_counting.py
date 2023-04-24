@@ -1,23 +1,25 @@
 from SimpleTxtConnector import *
 from TxtStickInput import *
+from TiMotor import *
+from config import *
+from TiModel import *
 
 if __name__ == "__main__":
     stxtc = SimpleTxtConnector()
     txt = stxtc.txt
     txtsi = TxtStickInput(txt, True)
-    lastcountervalue: int = 0
-    truecounter: int = 0
-    m1 = txt.motor(1)
+    # tim = TiModel(txt)
+
+    m1 = TiMotor(txt, 1, ConfigPy.min_speed_m1, ConfigPy.max_speed_m1, False)
+    m4 = TiMotor(txt, 4, ConfigPy.min_speed_m4, ConfigPy.max_speed_m4, False)
     while True:
-        lastcountervalue = m1.getCurrentDistance()
-        print(m1.getCurrentDistance(), " ", truecounter)
-        if txtsi.getPos("left", "Y") > 0:
-            m1.setSpeed(round(512 * txtsi.getPos("left", "Y")))
-            truecounter += m1.getCurrentDistance() - lastcountervalue
+        while not m4.getTruePosition() > 100:
+            m4.move(1)
+        m4.move(0)
+        while not m4.getTruePosition() < -100:
+            m4.move(-1)
+        m4.move(0)
 
-        if txtsi.getPos("left", "Y") < 0:
-            m1.setSpeed(round(512 * txtsi.getPos("left", "Y")))
-            truecounter -= m1.getCurrentDistance() - lastcountervalue
-
-        if txtsi.getPos("left", "Y") == 0:
-            m1.stop()
+    #while True:
+    #    m1.move(-txtsi.getPos("left", "Y"))
+    #    m4.move(-txtsi.getPos("right", "X"))
