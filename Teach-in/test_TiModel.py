@@ -7,20 +7,20 @@ if __name__ == "__main__":
     timodel = TiModel(ftxt)
     last = 0
 
-    timodel.TestMotors.TestReset.m1()
-    print(timodel.getCounterValue(1))
-    while True:
-        if timodel.getCounterValue(1) != last:
-            print(timodel.getCounterValue(1))
-            last = timodel.getCounterValue(1)
-        timodel.MovementAgent.DirectControl.Safe.m1(-1)
+    print("\n")
+    print(ConsoleUtils.Colors.red, ConsoleUtils.Stiles.bold, "TESTING COUNTERS FOR ALL MOTORS!", ConsoleUtils.Colors.reset)
+    timodel.TestMotors.Counters.m1()
+    timodel.TestMotors.Counters.m2()
+    timodel.TestMotors.Counters.m3()
+    timodel.TestMotors.Counters.m4()
+    print("\n")
+    print(ConsoleUtils.Colors.green, ConsoleUtils.Stiles.bold, "ALL MOTOR COUNTERS WORKING!", ConsoleUtils.Colors.reset)
 
-
-    timodel.TestMotors.TestCounters.m2()
-    timodel.TestMotors.TestCounters.m3()
-    timodel.TestMotors.TestCounters.m4()
-
-    timodel.TestMotors.TestReset.m1()
-    timodel.TestMotors.TestReset.m2()
-    timodel.TestMotors.TestReset.m3()
-    timodel.TestMotors.TestReset.m4()
+    print("\n")
+    print(ConsoleUtils.Colors.red, ConsoleUtils.Stiles.bold, "RESETTING ALL MOTORS!", ConsoleUtils.Colors.reset)
+    timodel.TestMotors.Reset.m1()
+    timodel.TestMotors.Reset.m2()
+    timodel.TestMotors.Reset.m3()
+    timodel.TestMotors.Reset.m4()
+    print("\n")
+    print(ConsoleUtils.Colors.green, ConsoleUtils.Stiles.bold, "ALL MOTOR RESETS DONE READY FOR USE!", ConsoleUtils.Colors.reset)

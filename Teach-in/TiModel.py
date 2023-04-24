@@ -5,6 +5,7 @@ import random
 from ftrobopy import *
 from config import *
 from TiMotor import *
+from console_utils import *
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -43,8 +44,6 @@ class TiModel:
         txt = main_txt
         verbose = v
         m1 = TiMotor(txt, 1, ConfigPy.min_speed_m1, ConfigPy.max_speed_m1)
-        m2 = TiMotor(txt, 2, ConfigPy.min_speed_m2, ConfigPy.max_speed_m2)
-        m3 = TiMotor(txt, 3, ConfigPy.min_speed_m3, ConfigPy.max_speed_m3)
         m4 = TiMotor(txt, 4, ConfigPy.min_speed_m4, ConfigPy.max_speed_m4)
 
     @staticmethod
@@ -141,21 +140,21 @@ class TiModel:
     class TestMotors:
         global txt
 
-        class TestCounters:
+        class Counters:
             @staticmethod
             def m1():
-                print("testing m1")
+                print(ConsoleUtils.Colors.blue, "testing m1", ConsoleUtils.Colors.reset)
                 global m1
 
                 while m1.getTruePosition() == 0:
                     m1.move(-0.1)
 
                 m1.move(0)
-                print("testing of m1: DONE value: ", m1.getTruePosition())
+                print(ConsoleUtils.Colors.green, ConsoleUtils.Stiles.bold, "testing of m1: DONE value: ", m1.getTruePosition(), ConsoleUtils.Colors.reset)
 
             @staticmethod
             def m2():
-                print("testing m2")
+                print(ConsoleUtils.Colors.blue, "testing m2", ConsoleUtils.Colors.reset)
                 global txt
                 m2 = txt.motor(2)
                 m2.setSpeed(ConfigPy.max_speed_m2)
@@ -165,14 +164,14 @@ class TiModel:
                     if txt.resistor(5).value() > 7390:
                         counter += 1
                         while not txt.resistor(5).value() < 7390:
-                            pass
+                            txt.updateWait()
 
                 m2.stop()
-                print("testing counter m2: DONE value: ", counter)
+                print(ConsoleUtils.Colors.green, ConsoleUtils.Stiles.bold, "testing counter m2: DONE value: ", counter, ConsoleUtils.Colors.reset)
 
             @staticmethod
             def m3():
-                print("testing m3")
+                print(ConsoleUtils.Colors.blue, "testing m3", ConsoleUtils.Colors.reset)
                 global txt
                 m3 = txt.motor(3)
                 m3.setSpeed(-ConfigPy.max_speed_m3)
@@ -186,11 +185,11 @@ class TiModel:
                         pass
 
                 m3.stop()
-                print("testing m3: DONE")
+                print(ConsoleUtils.Colors.green, ConsoleUtils.Stiles.bold, "testing m3: DONE", ConsoleUtils.Colors.reset)
 
             @staticmethod
             def m4():
-                print("testing m4")
+                print(ConsoleUtils.Colors.blue, "testing m4", ConsoleUtils.Colors.reset)
                 global txt
                 m4 = txt.motor(4)
                 m4.setSpeed(ConfigPy.max_speed_m4)
@@ -199,112 +198,106 @@ class TiModel:
                     pass
 
                 m4.stop()
-                print("testing m4: DONE value: ", m4.getCurrentDistance())
+                print(ConsoleUtils.Colors.green, ConsoleUtils.Stiles.bold, "testing m4: DONE value: ", m4.getCurrentDistance(), ConsoleUtils.Colors.reset)
 
-        class TestReset:
+        class Reset:
             global txt
 
             @staticmethod
             def m1():
-                print("resetting m1!")
+                print(ConsoleUtils.Stiles.bold, ConsoleUtils.Colors.blue, "resetting m1!", ConsoleUtils.Colors.reset)
                 if not txt.input(3).state():
-                    print("switch state false!")
+                    print(ConsoleUtils.Colors.yellow, "switch state false!", ConsoleUtils.Colors.reset)
                     while not txt.input(3).state():
                         m1.move(1)
-                    print("switch state true: EXITING")
+                    print(ConsoleUtils.Colors.green, "switch state true: EXITING", ConsoleUtils.Colors.reset)
                 elif txt.input(3).state():
-                    print("switch state true!")
+                    print(ConsoleUtils.Colors.yellow, "switch state true!", ConsoleUtils.Colors.reset)
                     while txt.input(3).state():
                         m1.move(-1)
-                    print("switch state false: RESETTING")
+                    print(ConsoleUtils.Colors.yellow, "switch state false: RESETTING", ConsoleUtils.Colors.reset)
                     m1.move(0)
                     while not txt.input(3).state():
                         m1.move(1)
-                    print("switch state true: EXITING")
+                    print(ConsoleUtils.Colors.green, "switch state true: EXITING", ConsoleUtils.Colors.reset)
 
                 m1.move(0)
                 m1.resetTruePosition()
-                print("resetting m1: DONE!")
+                print(ConsoleUtils.Stiles.bold, ConsoleUtils.Colors.green, "resetting m1: DONE!", ConsoleUtils.Colors.reset)
 
             @staticmethod
             def m2():
-                print("resetting m2!")
+                print(ConsoleUtils.Stiles.bold, ConsoleUtils.Colors.blue, "resetting m2!", ConsoleUtils.Colors.reset)
                 m2 = txt.motor(2)
                 if not txt.input(1).state():
-                    print("switch state false!")
+                    print(ConsoleUtils.Colors.yellow, "switch state false!", ConsoleUtils.Colors.reset)
                     m2.setSpeed(ConfigPy.max_speed_m2)
                     while not txt.input(1).state():
                         pass
-                    print("switch state true: EXITING")
+                    print(ConsoleUtils.Colors.green, "switch state true: EXITING", ConsoleUtils.Colors.reset)
                 elif txt.input(1).state():
-                    print("switch state true!")
+                    print(ConsoleUtils.Colors.yellow, "switch state true!", ConsoleUtils.Colors.reset)
                     m2.setSpeed(-ConfigPy.max_speed_m2)
                     while txt.input(1).state():
                         pass
-                    print("switch state false: RESETTING")
+                    print(ConsoleUtils.Colors.yellow, "switch state false: RESETTING", ConsoleUtils.Colors.reset)
                     m2.stop()
                     m2.setSpeed(ConfigPy.max_speed_m2)
                     while not txt.input(1).state():
                         pass
-                    print("switch state true: EXITING")
+                    print(ConsoleUtils.Colors.green, "switch state true: EXITING", ConsoleUtils.Colors.reset)
 
                 m2.stop()
-                print("resetting m2: DONE")
+                print(ConsoleUtils.Stiles.bold, ConsoleUtils.Colors.green, "resetting m2: DONE", ConsoleUtils.Colors.reset)
 
             @staticmethod
             def m3():
-                print("resetting m3!")
+                print(ConsoleUtils.Stiles.bold, ConsoleUtils.Colors.blue, "resetting m3!", ConsoleUtils.Colors.reset)
                 m3 = txt.motor(3)
                 if not txt.input(4).state():
-                    print("switch state false!")
+                    print(ConsoleUtils.Colors.yellow, "switch state false!", ConsoleUtils.Colors.reset)
                     m3.setSpeed(ConfigPy.max_speed_m3)
                     txt.updateWait(0.6)
-                    print("waited 0.6s whilst moving")
+                    print(ConsoleUtils.Colors.yellow, "waited 0.6s whilst moving", ConsoleUtils.Colors.reset)
                     if not txt.input(4).state():
-                        print("switch state false! moving outwards")
+                        print(ConsoleUtils.Colors.yellow, "switch state false! moving outwards", ConsoleUtils.Colors.reset)
                         m3.setSpeed(-ConfigPy.max_speed_m3)
                     while not txt.input(4).state():
                         pass
-                    print("switch state true: EXITING")
+                    print(ConsoleUtils.Colors.green, "switch state true: EXITING", ConsoleUtils.Colors.reset)
                 elif txt.input(4).state():
-                    print("switch state true!")
+                    print(ConsoleUtils.Colors.yellow, "switch state true!", ConsoleUtils.Colors.reset)
                     m3.setSpeed(ConfigPy.max_speed_m3)
                     while txt.input(4).state():
                         pass
-                    print("switch state false: RESETTING")
+                    print(ConsoleUtils.Colors.yellow, "switch state false: RESETTING", ConsoleUtils.Colors.reset)
                     m3.stop()
                     m3.setSpeed(-ConfigPy.max_speed_m3)
                     while not txt.input(4).state():
                         pass
-                    print("switch state true: EXITING")
+                    print(ConsoleUtils.Colors.green, "switch state true: EXITING", ConsoleUtils.Colors.reset)
 
                 m3.stop()
-                print("resetting m3: DONE")
+                print(ConsoleUtils.Stiles.bold, ConsoleUtils.Colors.green, "resetting m3: DONE", ConsoleUtils.Colors.reset)
 
             @staticmethod
             def m4():
-                print("resetting m4!")
-                m4 = txt.motor(4)
+                print(ConsoleUtils.Stiles.bold, ConsoleUtils.Colors.blue, "resetting m4!", ConsoleUtils.Colors.reset)
                 if not txt.input(2).state():
-                    print("switch state false!")
-                    if random.random() > 0.5:
-                        m4.setSpeed(ConfigPy.max_speed_m4)
-                    else:
-                        m4.setSpeed(-ConfigPy.max_speed_m4)
+                    print(ConsoleUtils.Colors.yellow, "switch state false!", ConsoleUtils.Colors.reset)
                     while not txt.input(2).state():
-                        pass
-                    print("switch state true: EXITING")
+                        m4.move(1)
+                    print(ConsoleUtils.Colors.green, "switch state true: EXITING", ConsoleUtils.Colors.reset)
                 elif txt.input(2).state():
-                    print("switch state true!")
-                    m4.setSpeed(ConfigPy.max_speed_m4)
+                    print(ConsoleUtils.Colors.yellow, "switch state true!", ConsoleUtils.Colors.reset)
                     while txt.input(2).state():
-                        pass
-                    print("switch state false: RESETTING")
-                    m4.stop()
-                    m4.setSpeed(-ConfigPy.max_speed_m4)
+                        m4.move(1)
+                    print(ConsoleUtils.Colors.yellow, "switch state false: RESETTING", ConsoleUtils.Colors.reset)
+                    m4.move(0)
                     while not txt.input(2).state():
-                        pass
-                    print("switch state true: EXITING")
+                        m4.move(-1)
+                    print(ConsoleUtils.Colors.green, "switch state true: EXITING", ConsoleUtils.Colors.reset)
 
-                m4.stop()
-                print("resetting m4: DONE")
+                m4.move(0)
+                m4.resetTruePosition()
+                print(ConsoleUtils.Stiles.bold, ConsoleUtils.Colors.green, "resetting m4: DONE", ConsoleUtils.Colors.reset)

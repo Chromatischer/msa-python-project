@@ -9,7 +9,7 @@ class ConfigPy:
     min_speed_m3 = 0
     max_speed_m3 = 512
     min_speed_m4 = 300
-    max_speed_m4 = 100
+    max_speed_m4 = 400
 
 
     @staticmethod

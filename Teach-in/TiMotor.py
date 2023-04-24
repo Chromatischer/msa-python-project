@@ -17,10 +17,12 @@ class TiMotor(object):
         return self._true_position
 
     def resetTruePosition(self):
-        print("Before: ", self._true_position)
+        if self._verbose:
+            print("Before: ", self._true_position)
         self._true_position = 0
         self._last_counter = 0
-        print("After: ", self._true_position)
+        if self._verbose:
+            print("After: ", self._true_position)
 
     def move(self, p: float):
         if p > 1.0 or p < -1.0:
