@@ -6,17 +6,18 @@ from InputMethode import *
 from TiModel import *
 from TxtStickInput import *
 
-inputMethode = InputMethode("joystick")
-
-txt = None
-tiModel = None
+inputMethode = InputMethode(["joystick"])
 
 
 class TiController(QRunnable):
-    @staticmethod
-    def getJoystickInput():
-        global txt
-        txtstinp = TxtStickInput(txt)
+    def getJoystickInput(self):
+        self.txtstinp = TxtStickInput(self.txt)
+        if self.txtstinp.getPos("left", "X") != 0:
+            while self.txtstinp.getPos("right", "X") != 0:
+                self.tiModel.MovementAgent.DirectControl.Safe.m1(self.txtstinp.getPos("left", "X"))
+        else:
+            self.tiModel.MovementAgent.DirectControl.Safe.m1(0)
+
 
     @staticmethod
     def getFileInput():
@@ -24,31 +25,31 @@ class TiController(QRunnable):
 
     def __init__(self, value_txt: ftrobopy):
         super().__init__()
-        global txt, tiModel
 
-        txt: ftrobopy
-        txt = value_txt
+        self.txt = value_txt
 
-        tiModel: TiModel
-        tiModel = TiModel(txt)
+        self.tiModel = TiModel(self.txt)
 
     def run(self):
-        global inputMethode, txt, tiModel
-        inputMethode: InputMethode
+        self.inputMethode: InputMethode
 
         print("entered main loop of TiController 100%")
 
         print("setting default config for txt:")
-        ConfigPy.set_default_config()
+        # ConfigPy.set_default_config()
 
         print("testing motors!")
-        tiModel.TestMotors.m1()
+        self.tiModel.TestMotors.Counters.m1()
+        self.tiModel.TestMotors.Reset.m1()
         print("test motor 1 complete!")
-        tiModel.TestMotors.m2()
+        self.tiModel.TestMotors.Counters.m2()
+        self.tiModel.TestMotors.Reset.m2()
         print("test motor 2 complete!")
-        tiModel.TestMotors.m3()
+        self.tiModel.TestMotors.Counters.m3()
+        self.tiModel.TestMotors.Reset.m3()
         print("test motor 3 complete!")
-        tiModel.TestMotors.m4()
+        self.tiModel.TestMotors.Counters.m4()
+        self.tiModel.TestMotors.Reset.m4()
         print("test motor 4 complete!")
 
         while True:

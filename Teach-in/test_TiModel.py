@@ -4,7 +4,7 @@ from SimpleTxtConnector import *
 if __name__ == "__main__":
     stxtc = SimpleTxtConnector()
     ftxt = stxtc.txt
-    timodel = TiModel(ftxt)
+    timodel = TiModel(ftxt, True)
     last = 0
 
     print("\n")

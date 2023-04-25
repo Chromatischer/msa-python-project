@@ -48,5 +48,9 @@ class TiMotor(object):
             self._last_counter = self._true_position
             self.mot.stop()
 
+            i = 0
             while not self.mot.getCurrentDistance() == 0:
                 self.txt.updateWait()
+                i += 1
+                if i > 100:
+                    raise Exception("unable to verify motor reset! After 100 cycles!")

@@ -8,10 +8,11 @@ class InputMethode(object):
         if len(args) != 1:
             raise Exception("too many arguments")
 
-        if args[0] is not "joystick" or "file":
-            raise ValueError("must be one of: 'joystick' or 'file'")
+        print(args[0])
+        if str(args[0]) != "joystick" and str(args[0]) != "file":
+            raise ValueError(str(args[0]), "is not one of: 'joystick' or 'file'")
         else:
-            self._inputMethode = args[0]
+            self._inputMethode = str(args[0])
 
     def getInputMethode(self):
         """

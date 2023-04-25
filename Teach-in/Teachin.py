@@ -6,8 +6,7 @@ from TouchStyle import *
 from TiView import *
 from TiController import *
 from TiModel import *
-
-txt = None
+from SimpleTxtConnector import *
 
 
 class SetupThreads:
@@ -33,7 +32,7 @@ class SetupThreads:
 class FtcGuiApplication(TouchApplication):
     def __init__(self, args):
         global txt
-        txt: ftrobopy
+        # txt: ftrobopy
 
         print("initializing FtcGuiApplication")
         TouchApplication.__init__(self, args)
@@ -90,4 +89,9 @@ class FtcGuiApplication(TouchApplication):
 
 if __name__ == "__main__":
     print("starting program!")
-    application = FtcGuiApplication(sys.argv)
+    stxtc = SimpleTxtConnector()
+    global txt
+    txt = stxtc.txt
+    SetupThreads.start_model_control()
+
+    # application = FtcGuiApplication(sys.argv)

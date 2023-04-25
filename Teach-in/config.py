@@ -4,12 +4,12 @@ from ftrobopy import *
 class ConfigPy:
     min_speed_m1 = 410
     max_speed_m1 = 512
-    min_speed_m2 = 0
+    min_speed_m2 = 512
     max_speed_m2 = 512
-    min_speed_m3 = 0
+    min_speed_m3 = 200
     max_speed_m3 = 512
     min_speed_m4 = 300
-    max_speed_m4 = 400
+    max_speed_m4 = 512
 
 
     @staticmethod
