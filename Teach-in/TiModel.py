@@ -206,14 +206,17 @@ class TiModel:
                                 if verbose:
                                     print("not moving m2 because: stop switch state: ", bool(txt.input(1).state()))
                         elif p < 0:
-                            if not _counter_m2 > 100:
-                                print("moving m2: ", p)
+                            if not _counter_m2 < -34:
+                                if verbose:
+                                    print("moving m2: ", p)
                                 if round(ConfigPy.max_speed_m2 * p) < ConfigPy.min_speed_m2:
                                     m2.setSpeed(-ConfigPy.min_speed_m2)
-                                    print("spd:", -ConfigPy.min_speed_m2)
+                                    if verbose:
+                                        print("spd:", -ConfigPy.min_speed_m2)
                                 else:
                                     m2.setSpeed(-round(ConfigPy.max_speed_m2 * p))
-                                    print("spd:", -round(ConfigPy.max_speed_m2 * p))
+                                    if verbose:
+                                        print("spd:", -round(ConfigPy.max_speed_m2 * p))
 
                                 c_res5_noop = 0
                                 reset_spd_m2 = False
@@ -225,7 +228,8 @@ class TiModel:
                                     if c_res5_noop > 30:
                                         print(ConsoleUtils.Colors.red, "waited for: ", c_res5_noop, " cycles without resistor value! setting speed to min value!")
                                         m2.setSpeed(-ConfigPy.min_speed_m2)
-                                        print("spd:", -ConfigPy.min_speed_m2)
+                                        if verbose:
+                                            print("spd:", -ConfigPy.min_speed_m2)
                                         reset_spd_m2 = True
                                 #endregion
 
@@ -233,10 +237,12 @@ class TiModel:
                                 if reset_spd_m2:
                                     if round(ConfigPy.max_speed_m2 * p) < ConfigPy.min_speed_m2:
                                         m2.setSpeed(-ConfigPy.min_speed_m2)
-                                        print("spd:", -ConfigPy.min_speed_m2)
+                                        if verbose:
+                                            print("spd:", -ConfigPy.min_speed_m2)
                                     else:
                                         m2.setSpeed(round(ConfigPy.max_speed_m2 * p))
-                                        print("spd:", -round(ConfigPy.max_speed_m2 * p))
+                                        if verbose:
+                                            print("spd:", -round(ConfigPy.max_speed_m2 * p))
                                 #endregion
 
                                 _counter_m2 -= 1
@@ -301,8 +307,9 @@ class TiModel:
 
                     elif p < 0:
                         if _counter_m3 == 1:
-                            print("p < 0 counter == 1")
-                            print(txt.input(4).state())
+                            if verbose:
+                                print("p < 0 counter == 1")
+                                print(txt.input(4).state())
                             if ConfigPy.max_speed_m3 * -p < ConfigPy.min_speed_m3:
                                 m3.setSpeed(ConfigPy.min_speed_m3)
                                 if verbose:
@@ -319,7 +326,8 @@ class TiModel:
                                 print(_counter_m3)
 
                         elif _counter_m3 == 0:
-                            print("p < 0 counter == 0")
+                            if verbose:
+                                print("p < 0 counter == 0")
                             if ConfigPy.max_speed_m3 * -p < ConfigPy.min_speed_m3:
                                 m3.setSpeed(ConfigPy.min_speed_m3)
                                 if verbose:
@@ -412,11 +420,15 @@ class TiModel:
 
                 if txt.input(4).state():
                     while not not txt.input(4).state():
-                        pass
+                        txt.updateWait(0.6)
+                        if not txt.input(4).state():
+                            m3.setSpeed(ConfigPy.max_speed_m3)
                 else:
                     m3.setSpeed(ConfigPy.max_speed_m3)
                     while not txt.input(4).state():
-                        pass
+                        txt.updateWait(0.6)
+                        if not txt.input(4).state():
+                            m3.setSpeed(-ConfigPy.max_speed_m3)
 
                 m3.stop()
                 print(ConsoleUtils.Colors.green, ConsoleUtils.Stiles.bold, "testing m3: DONE",

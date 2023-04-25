@@ -1,4 +1,4 @@
-class Position:
+class TiPosition:
     """
     this class is used to save and retrieve the position data for the txt-model
     """

@@ -6,7 +6,7 @@ class ConfigPy:
     max_speed_m1 = 512
     min_speed_m2 = 512
     max_speed_m2 = 512
-    min_speed_m3 = 200
+    min_speed_m3 = 512
     max_speed_m3 = 512
     min_speed_m4 = 300
     max_speed_m4 = 512
