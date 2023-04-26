@@ -7,9 +7,9 @@ from SimpleTxtConnector import *
 #----------------------------------------------------------------------------------------------------------------------#
 
 if __name__ == "__main__":
-    richtung: str = "zu"  # die richtung, in welche das Modell sich bewegen soll!
+    richtung: str = "runter"  # die richtung, in welche das Modell sich bewegen soll!
 
-    time: float = 0.7  # die Zeit in sek, welche mindestens vergehen soll, bis der Motor stoppt!
+    time: float = 3.0  # die Zeit in sek, welche mindestens vergehen soll, bis der Motor stoppt!
 
     # **ACHTUNG: ES GIBT KEINE SICHERHEITSVORKEHRUNGEN, ES BESTEHT ZERSTÖRUNGSRISIKO**
     

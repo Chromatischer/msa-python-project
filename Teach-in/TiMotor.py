@@ -50,7 +50,11 @@ class TiMotor(object):
 
             i = 0
             while not self.mot.getCurrentDistance() == 0:
-                self.txt.updateWait()
                 i += 1
                 if i > 100:
-                    raise Exception("unable to verify motor reset! After 100 cycles!")
+                    self.mot.setSpeed(1)
+                    self.txt.updateWait(0.1)
+                    self.mot.stop()
+                    self.txt.updateWait(0.1)
+                    if not self.mot.getCurrentDistance() == 0:
+                        raise Exception("unable to verify motor reset! After 100 cycles!")

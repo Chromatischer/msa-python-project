@@ -37,7 +37,7 @@ class InputMethode(object):
         else:
             raise ValueError("input parameter does not have expected value!")
 
-    def setInputMethode(self, input_methode: int):
+    def setInputMethode_int(self, input_methode: int):
         """
         sets the input methode to the given value if possible, else throws ValueError
         :param input_methode: the name of the new input methode (1 = joystick, 2 = file)

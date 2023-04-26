@@ -6,20 +6,24 @@ from InputMethode import *
 from TiModel import *
 from TiPosition import *
 from TxtStickInput import *
+from console_utils import *
 
 
-inputMethode = InputMethode(["joystick"])
-tipos: [TiPosition] = []
+inputMethode = InputMethode(["file"])
 
 
 class TiController(QRunnable):
     def getJoystickInput(self):
         if self.txtstinp.getButton("left"):
-            tipos.append(TiPosition(self.tiModel.getCounterValue(1), self.tiModel.getCounterValue(2), self.tiModel.getCounterValue(3), self.tiModel.getCounterValue(4)))
-            print("left button press! ", tipos[len(tipos)-1].get_str())
+            self.tipos.append(TiPosition(self.tiModel.getCounterValue(1), self.tiModel.getCounterValue(2), self.tiModel.getCounterValue(3), self.tiModel.getCounterValue(4)))
+            print("left button press! ", self.tipos[len(self.tipos)-1].get_str())
             self.txt.updateWait(0.7)
 
         if self.txtstinp.getButton("right"):
+            self.tiModel.TestMotors.Reset.m1()
+            self.tiModel.TestMotors.Reset.m2()
+            self.tiModel.TestMotors.Reset.m3()
+            self.tiModel.TestMotors.Reset.m4()
             inputMethode.setInputMethode("file")
 
         if self.txtstinp.getPos("right", "Y") != 0:
@@ -38,8 +42,8 @@ class TiController(QRunnable):
 
         if self.txtstinp.getPos("right", "X") != 0:
             while self.txtstinp.getPos("right", "X") != 0:
-                if self.verbose: print("right, X -> ", round(self.txtstinp.getPos("right", "X")))
-                self.tiModel.MovementAgent.DirectControl.Safe.m4(self.txtstinp.getPos("right", "X"))
+                if self.verbose: print("right, X -> ", -round(self.txtstinp.getPos("right", "X")))
+                self.tiModel.MovementAgent.DirectControl.Safe.m4(-self.txtstinp.getPos("right", "X"))
         else:
             self.tiModel.MovementAgent.DirectControl.Safe.m4(0)
 
@@ -57,29 +61,35 @@ class TiController(QRunnable):
         #                                          did it work?:
 
         i = 0
-        for tiPosition in tipos:
+        print(ConsoleUtils.Colors.blue, "number of total elements in buffer: " + str(len(self.tipos)), ConsoleUtils.Colors.reset)
+        for tiPosition in self.tipos:
             i += 1
             if self.verbose:
-                print("executing run for element: ", i, " in tipos with values: ", tiPosition.get_str())
+                print(ConsoleUtils.Colors.yellow, "executing run for element: ", ConsoleUtils.Colors.magenta, i, ConsoleUtils.Colors.yellow, " in tipos with values: ", tiPosition.get_str(), ConsoleUtils.Colors.reset)
             for m in range(4):
-                if self.verbose:
-                    print("element: ", i, " motor: ", m, " current value: ", self.tiModel.getCounterValue(m), " target: ", tiPosition.__getattr__(m))
-                while self.tiModel.getCounterValue(m) < tiPosition.__getattr__(m):
+                m = m + 1
+                if not tiPosition.get(m) == 0:
                     if self.verbose:
-                        print("current value smaller target, Direct-control set to 1")
-                    #I have no clue what I am doing, nor have I gotten any Idea weather or not it will work!
-                    to_exec: str = "self.tiModel.MovementAgent.DirectControl.Safe.m" + str(m) + "(1)"
+                        print(ConsoleUtils.Colors.yellow, "element: ", ConsoleUtils.Colors.magenta, i, ConsoleUtils.Colors.yellow, " motor: ", ConsoleUtils.Colors.magenta, m, ConsoleUtils.Colors.yellow, " current value: ", ConsoleUtils.Colors.magenta, self.tiModel.getCounterValue(m), ConsoleUtils.Colors.yellow, " target: ", ConsoleUtils.Colors.magenta, tiPosition.get(m), ConsoleUtils.Colors.reset)
+
+                    if self.tiModel.getCounterValue(m) < tiPosition.get(m):
+                        while self.tiModel.getCounterValue(m) < tiPosition.get(m):
+                            # print("current value: ", self.tiModel.getCounterValue(m), " smaller target: ", tiPosition.get(m), " Direct-control set to 1")
+                            #I have no clue what I am doing, nor have I gotten any Idea weather or not it will work!
+                            to_exec: str = "self.tiModel.MovementAgent.DirectControl.Safe.m" + str(m) + "(1)"
+                            exec(to_exec)
+                    elif self.tiModel.getCounterValue(m) > tiPosition.get(m):
+                        while self.tiModel.getCounterValue(m) > tiPosition.get(m):
+                            # print("current value: ", self.tiModel.getCounterValue(m), " larger target: ", tiPosition.get(m), " Direct-control set to -1")
+                            #I have no clue what I am doing, nor have I gotten any Idea weather or not it will work!
+                            to_exec: str = "self.tiModel.MovementAgent.DirectControl.Safe.m" + str(m) + "(-1)"
+                            exec(to_exec)
+
+                    to_exec: str = "self.tiModel.MovementAgent.DirectControl.Safe.m" + str(m) + "(0)"
                     exec(to_exec)
 
-                while self.tiModel.getCounterValue(m) > tiPosition.__getattr__(m):
                     if self.verbose:
-                        print("current value larger target, Direct-control set to -1")
-                    #I have no clue what I am doing, nor have I gotten any Idea weather or not it will work!
-                    to_exec: str = "self.tiModel.MovementAgent.DirectControl.Safe.m" + str(m) + "(-1)"
-                    exec(to_exec)
-
-                if self.verbose:
-                    print("current value after run: ", self.tiModel.getCounterValue(m), " target was: ", tiPosition.__getattr__(m))
+                        print(ConsoleUtils.Colors.green, "current value after run: ", self.tiModel.getCounterValue(m), " target was: ", tiPosition.get(m), ConsoleUtils.Colors.reset)
 
     def __init__(self, value_txt: ftrobopy, verbose=False):
         super().__init__()
@@ -89,6 +99,13 @@ class TiController(QRunnable):
         self.tiModel = TiModel(self.txt)
         self.txtstinp = TxtStickInput(self.txt, True)
         self.verbose = verbose
+        self.tipos = list()
+
+        self.tipos.append(TiPosition(-100, -5, 1, 200))
+        self.tipos.append(TiPosition(-200, -10, 0, 400))
+        self.tipos.append(TiPosition(-50, 0, -1, -200))
+        self.tipos.append(TiPosition(0, 0, 0, 200))
+        self.tipos.append(TiPosition(0, 0, 0, 0))
 
 
     def run(self):

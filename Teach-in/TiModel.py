@@ -131,7 +131,7 @@ class TiModel:
                             if verbose:
                                 print("reset position value for m1: hard switch point reached!")
                     elif p < 0:
-                        if not m1.getTruePosition() < -1200:
+                        if not m1.getTruePosition() < -950:
                             if verbose:
                                 print("moving m1! speed: ", round(ConfigPy.max_speed_m1 * p))
                             m1.move(p)
@@ -272,7 +272,8 @@ class TiModel:
                             print("reset counter m3: hard switch state reached!")
                     if p > 0:
                         if _counter_m3 == 0:
-                            print("p > 0 counter == 0")
+                            if verbose:
+                                print("p > 0 counter == 0")
                             if ConfigPy.max_speed_m3 * p < ConfigPy.min_speed_m3:
                                 m3.setSpeed(-ConfigPy.min_speed_m3)
                                 if verbose:
@@ -289,7 +290,8 @@ class TiModel:
                                 print(_counter_m3)
 
                         elif _counter_m3 == -1:
-                            print("p > 0 counter == -1")
+                            if verbose:
+                                print("p > 0 counter == -1")
                             if ConfigPy.max_speed_m3 * p < ConfigPy.min_speed_m3:
                                 m3.setSpeed(-ConfigPy.min_speed_m3)
                                 if verbose:
@@ -420,13 +422,13 @@ class TiModel:
 
                 if txt.input(4).state():
                     while not not txt.input(4).state():
-                        txt.updateWait(0.6)
+                        txt.updateWait(0.4)
                         if not txt.input(4).state():
                             m3.setSpeed(ConfigPy.max_speed_m3)
                 else:
                     m3.setSpeed(ConfigPy.max_speed_m3)
                     while not txt.input(4).state():
-                        txt.updateWait(0.6)
+                        txt.updateWait(0.4)
                         if not txt.input(4).state():
                             m3.setSpeed(-ConfigPy.max_speed_m3)
 

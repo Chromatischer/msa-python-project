@@ -10,7 +10,7 @@ class SimpleTxtConnector:
         self.txt = None
         try:
             print("trying to connect to localhost")
-            self.txt = ftrobopy('localhost', 65000, use_TransferAreaMode=True)
+            self.txt = ftrobopy('localhost', 65000)
 
         except (TimeoutError, ConnectionRefusedError, NameError) as error:
             print("failed to connect to localhost: ", error)
