@@ -9,7 +9,6 @@ if __name__ == "__main__":
 
     tim.TestMotors.Reset.m1()
     tim.TestMotors.Reset.m4()
-
     for i in range(37):
         while not tim.getCounterValue(1) <= -i * 25:
             print(-i * 25, " ", tim.getCounterValue(1), " \r")

@@ -5,6 +5,7 @@ class TiMotor(object):
 
     def __init__(self, txt: ftrobopy, motnum: int, min_spd: int, max_spd: int, verbose: bool = False):
         self.txt = txt
+        self.motnum = motnum
         self.mot = txt.motor(motnum)
         self._last_counter: int = 0
         self._true_position: int = 0
@@ -47,14 +48,22 @@ class TiMotor(object):
 
             self._last_counter = self._true_position
             self.mot.stop()
-
+            self.txt.updateWait(0.2)
             i = 0
-            while not self.mot.getCurrentDistance() == 0:
+            while self.mot.getCurrentDistance() != 1:
+                self.txt.incrCounterCmdId(self.motnum - 1)
+                self.txt.updateWait(0.1)
+                print(self.txt.getCurrentCounterInput(), " ", self.mot.getCurrentDistance(), i)
                 i += 1
                 if i > 100:
-                    self.mot.setSpeed(1)
-                    self.txt.updateWait(0.1)
-                    self.mot.stop()
-                    self.txt.updateWait(0.1)
-                    if not self.mot.getCurrentDistance() == 0:
-                        raise Exception("unable to verify motor reset! After 100 cycles!")
+                    self.txt.stopOnline()
+                    raise OSError("lol")
+
+            #while not self.txt.getCurrentCounterValue((self.motnum - 1)) == 0:
+            #    self.mot.setSpeed(1)
+            #    self.txt.updateWait(1)
+            #    self.mot.stop()
+            #    self.txt.updateWait(2)
+            #    if not self.txt.getCurrentCounterValue((self.motnum - 1)) == 0:
+            #        self.txt.stopOnline()
+            #        raise Exception("unable to verify motor reset! After 100 cycles!")

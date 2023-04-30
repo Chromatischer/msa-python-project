@@ -6,22 +6,39 @@ from ftrobopy import *
 
 class SimpleTxtConnector:
 
-    def __init__(self):
+    def __init__(self, direct=False):
         self.txt = None
-        try:
-            print("trying to connect to localhost")
-            self.txt = ftrobopy('localhost', 65000)
-
-        except (TimeoutError, ConnectionRefusedError, NameError) as error:
-            print("failed to connect to localhost: ", error)
-
-        if not self.txt:
+        if direct:
             try:
-                print("trying to connect to W-lan host")
-                self.txt = ftrobopy('ft-txt', 65000)
+                print("trying to connect to direct")
+                self.txt = ftrobopy('direct', use_extension=True)
 
-            except (TimeoutError, ConnectionRefusedError) as error:
-                print("failed to connect to W-lan host: ", error)
+            except (TimeoutError, ConnectionRefusedError, NameError) as error:
+                print("failed to connect to direct: ", error)
+        else:
+            if not self.txt:
+                try:
+                    print("trying to connect to offline USB mode")
+                    self.txt = ftrobopy('192.168.7.2', use_extension=True)
+
+                except (TimeoutError, ConnectionRefusedError) as error:
+                    print("failed to connect to offline USB mode: ", error)
+
+            if not self.txt:
+                try:
+                    print("trying to connect to localhost")
+                    self.txt = ftrobopy('localhost', use_extension=True)
+
+                except (TimeoutError, ConnectionRefusedError) as error:
+                    print("failed to connect to localhost: ", error)
+
+            if not self.txt:
+                try:
+                    print("trying to connect to W-lan host")
+                    self.txt = ftrobopy('192.168.178.72', use_extension=True)
+
+                except (TimeoutError, ConnectionRefusedError) as error:
+                    print("failed to connect to W-lan host: ", error)
 
         if not self.txt:
             raise ConnectionRefusedError("cant connect to txt!")
