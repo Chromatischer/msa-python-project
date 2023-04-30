@@ -1,6 +1,9 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import sys
+import select
+import tty
 from InputMethode import *
 from TiModel import *
 from TiView import *
@@ -8,12 +11,11 @@ from TiPosition import *
 from TxtStickInput import *
 from console_utils import *
 
-import curses
-
-
 inputMethode = InputMethode(["curses"])
 
+
 class TiController():
+
     def getJoystickInput(self):
         if self.txtstinp.getButton("left"):
             self.tipos.append(TiPosition(self.tiModel.getCounterValue(1), self.tiModel.getCounterValue(2), self.tiModel.getCounterValue(3), self.tiModel.getCounterValue(4)))
@@ -94,77 +96,78 @@ class TiController():
 
     def getCursesInput(self):
         print(self.tiModel.getCounterValue(1), " ", self.tiModel.getCounterValue(2), " ", self.tiModel.getCounterValue(3), " ", self.tiModel.getCounterValue(4))
-        c = self.viewer.screen.getch()
-        if c == ord('a'):
-            if self.verbose:
-                print("rotate left: ", self.rotate)
-            if self.rotate == -1:
-                self.rotate = 0
-            elif self.rotate == 0:
-                self.rotate = -1
-        if c == ord('d'):
-            if self.verbose: print("rotate right: ", self.rotate)
-            if self.rotate == 1:
-                self.rotate = 0
-            elif self.rotate == 0:
-                self.rotate = 1
-        if c == ord('w'):
-            if self.verbose:
-                print("move fwd: ", self.move_x)
-            if self.move_x == -1:
-                self.move_x = 0
-            elif self.move_x == 0:
-                self.move_x = -1
-        if c == ord('s'):
-            if self.verbose: print("move bwd: ", self.move_x)
-            if self.move_x == 1:
-                self.move_x = 0
-            elif self.move_x == 0:
-                self.move_x = 1
-        if c == ord('r'):
-            if self.verbose:
-                print("move up: ", self.move_y)
-            if self.move_y == -1:
-                self.move_y = 0
-            elif self.move_y == 0:
-                self.move_y = -1
-        if c == ord('f'):
-            if self.verbose: print("move down: ", self.move_y)
-            if self.move_y == 1:
-                self.move_y = 0
-            elif self.move_y == 0:
-                self.move_y = 1
-        if c == ord('q'):
-            if self.verbose:
-                print("claw open: ", self.claw)
-            if self.claw == -1:
-                self.claw = 0
-            elif self.claw == 0:
-                self.claw = -1
-        if c == ord('e'):
-            if self.verbose: print("claw close: ", self.claw)
-            if self.claw == 1:
-                self.claw = 0
-            elif self.claw == 0:
-                self.claw = 1
+        if select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], []):
+            c = sys.stdin.read(1)
+            print("c = ", c)
+
+            if c == 'a':
+                if self.verbose: print("rotate left: ", self.rotate)
+                if self.rotate == -1:
+                    self.rotate = 0
+                elif self.rotate == 0:
+                    self.rotate = -1
+            if c == 'd':
+                if self.verbose: print("rotate right: ", self.rotate)
+                if self.rotate == 1:
+                    self.rotate = 0
+                elif self.rotate == 0:
+                    self.rotate = 1
+            if c == 'w':
+                if self.verbose:
+                    print("move fwd: ", self.move_x)
+                if self.move_x == -1:
+                    self.move_x = 0
+                elif self.move_x == 0:
+                    self.move_x = -1
+            if c == 's':
+                if self.verbose: print("move bwd: ", self.move_x)
+                if self.move_x == 1:
+                    self.move_x = 0
+                elif self.move_x == 0:
+                    self.move_x = 1
+            if c == 'r':
+                if self.verbose:
+                    print("move up: ", self.move_y)
+                if self.move_y == -1:
+                    self.move_y = 0
+                elif self.move_y == 0:
+                    self.move_y = -1
+            if c == 'f':
+                if self.verbose: print("move down: ", self.move_y)
+                if self.move_y == 1:
+                    self.move_y = 0
+                elif self.move_y == 0:
+                    self.move_y = 1
+            if c == 'q':
+                if self.verbose:
+                    print("claw open: ", self.claw)
+                if self.claw == -1:
+                    self.claw = 0
+                elif self.claw == 0:
+                    self.claw = -1
+            if c == 'e':
+                if self.verbose: print("claw close: ", self.claw)
+                if self.claw == 1:
+                    self.claw = 0
+                elif self.claw == 0:
+                    self.claw = 1
+            if c == ' ':
+                self.tipos.append(TiPosition(self.tiModel.getCounterValue(1), self.tiModel.getCounterValue(2), self.tiModel.getCounterValue(3), self.tiModel.getCounterValue(4)))
+                print("left button press! ", self.tipos[len(self.tipos)-1].get_str())
+                self.txt.updateWait(0.7)
+            if c == '\x0a':
+                self.tiModel.TestMotors.Reset.m1()
+                self.tiModel.TestMotors.Reset.m2()
+                self.tiModel.TestMotors.Reset.m3()
+                self.tiModel.TestMotors.Reset.m4()
+                inputMethode.setInputMethode("file")
+            if c == '\x1b':
+                self.txt.stopOnline()
+                exit(0)
         self.tiModel.MovementAgent.DirectControl.Safe.m4(self.rotate)
         self.tiModel.MovementAgent.DirectControl.Safe.m1(self.move_x)
         self.tiModel.MovementAgent.DirectControl.Safe.m2(self.move_y)
         self.tiModel.MovementAgent.DirectControl.Safe.m3(self.claw)
-        if c == ord(' '):
-            self.tipos.append(TiPosition(self.tiModel.getCounterValue(1), self.tiModel.getCounterValue(2), self.tiModel.getCounterValue(3), self.tiModel.getCounterValue(4)))
-            print("left button press! ", self.tipos[len(self.tipos)-1].get_str())
-            self.txt.updateWait(0.7)
-        if c == 13:
-            self.tiModel.TestMotors.Reset.m1()
-            self.tiModel.TestMotors.Reset.m2()
-            self.tiModel.TestMotors.Reset.m3()
-            self.tiModel.TestMotors.Reset.m4()
-            inputMethode.setInputMethode("file")
-        if c == 27:
-            self.txt.stopOnline()
-            curses.endwin()
-            exit(0)
 
     def __init__(self, value_txt: ftrobopy, viewer: TiView, verbose=False):
         super().__init__()
@@ -172,12 +175,11 @@ class TiController():
         self.txt = value_txt
         self.viewer = viewer
 
-        self.tiModel = TiModel(self.txt, v=True)
+        self.tiModel = TiModel(self.txt, v=False)
         self.txtstinp = TxtStickInput(self.txt, True)
         self.verbose = verbose
         self.tipos = list()
 
-        self.viewer.screen.nodelay(1)  # set getch() non-blocking
         self.rotate = 0
         self.move_x = 0
         self.move_y = 0
@@ -188,7 +190,6 @@ class TiController():
         self.tipos.append(TiPosition(-50, 0, -1, -200))
         self.tipos.append(TiPosition(0, 0, 0, 200))
         self.tipos.append(TiPosition(0, 0, 0, 0))
-
 
     def run(self):
         # self.inputMethode: InputMethode 
@@ -212,6 +213,7 @@ class TiController():
         self.tiModel.TestMotors.Reset.m4()
         print("test motor 4 complete!")
 
+        tty.setcbreak(sys.stdin.fileno())
         while True:
             if inputMethode.getInputMethode() == "joystick":
                 self.getJoystickInput()
@@ -219,4 +221,3 @@ class TiController():
                 self.getFileInput()
             elif inputMethode.getInputMethode() == "curses":
                 self.getCursesInput()
-
