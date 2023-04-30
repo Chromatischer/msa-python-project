@@ -53,7 +53,6 @@ class TiMotor(object):
             while self.mot.getCurrentDistance() != 1:
                 self.txt.incrCounterCmdId(self.motnum - 1)
                 self.txt.updateWait(0.1)
-                print(self.txt.getCurrentCounterInput(), " ", self.mot.getCurrentDistance(), i)
                 i += 1
                 if i > 100:
                     self.txt.stopOnline()

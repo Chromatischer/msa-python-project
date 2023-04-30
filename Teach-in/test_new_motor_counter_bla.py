@@ -22,7 +22,6 @@ if __name__ == "__main__":
         txt.incrCounterCmdId(0)
         txt.incrCounterCmdId(3)
         txt.updateWait(0.1)
-        print(txt.getCurrentCounterInput(), " ", m1.getCurrentDistance(), " ", m4.getCurrentDistance(), " ", i)
         i += 1
         if i > 100:
             txt.stopOnline()

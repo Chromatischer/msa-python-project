@@ -93,6 +93,7 @@ class TiController():
                         print(ConsoleUtils.Colors.green, "current value after run: ", self.tiModel.getCounterValue(m), " target was: ", tiPosition.get(m), ConsoleUtils.Colors.reset)
 
     def getCursesInput(self):
+        print(self.tiModel.getCounterValue(1), " ", self.tiModel.getCounterValue(2), " ", self.tiModel.getCounterValue(3), " ", self.tiModel.getCounterValue(4))
         c = self.viewer.screen.getch()
         if c == ord('a'):
             if self.verbose:
@@ -107,38 +108,49 @@ class TiController():
                 self.rotate = 0
             elif self.rotate == 0:
                 self.rotate = 1
-        self.tiModel.MovementAgent.DirectControl.Safe.m4(self.rotate)
-
         if c == ord('w'):
-            if self.verbose: print("move forward")
-            self.tiModel.MovementAgent.DirectControl.Safe.m2(1)
-        else:
-            self.tiModel.MovementAgent.DirectControl.Safe.m2(0)
+            if self.verbose:
+                print("move fwd: ", self.move_x)
+            if self.move_x == -1:
+                self.move_x = 0
+            elif self.move_x == 0:
+                self.move_x = -1
         if c == ord('s'):
-            if self.verbose: print("move backwards")
-            self.tiModel.MovementAgent.DirectControl.Safe.m2(-1)
-        else:
-            self.tiModel.MovementAgent.DirectControl.Safe.m2(0)
+            if self.verbose: print("move bwd: ", self.move_x)
+            if self.move_x == 1:
+                self.move_x = 0
+            elif self.move_x == 0:
+                self.move_x = 1
         if c == ord('r'):
-            if self.verbose: print("move up")
-            self.tiModel.MovementAgent.DirectControl.Safe.m1(1)
-        else:
-            self.tiModel.MovementAgent.DirectControl.Safe.m1(0)
+            if self.verbose:
+                print("move up: ", self.move_y)
+            if self.move_y == -1:
+                self.move_y = 0
+            elif self.move_y == 0:
+                self.move_y = -1
         if c == ord('f'):
-            if self.verbose: print("move down")
-            self.tiModel.MovementAgent.DirectControl.Safe.m1(-1)
-        else:
-            self.tiModel.MovementAgent.DirectControl.Safe.m1(0)
+            if self.verbose: print("move down: ", self.move_y)
+            if self.move_y == 1:
+                self.move_y = 0
+            elif self.move_y == 0:
+                self.move_y = 1
         if c == ord('q'):
-            if self.verbose: print("claw close")
-            self.tiModel.MovementAgent.DirectControl.Safe.m3(-1)
-        else:
-            self.tiModel.MovementAgent.DirectControl.Safe.m3(0)
+            if self.verbose:
+                print("claw open: ", self.claw)
+            if self.claw == -1:
+                self.claw = 0
+            elif self.claw == 0:
+                self.claw = -1
         if c == ord('e'):
-            if self.verbose: print("claw open")
-            self.tiModel.MovementAgent.DirectControl.Safe.m3(1)
-        else:
-            self.tiModel.MovementAgent.DirectControl.Safe.m3(0)
+            if self.verbose: print("claw close: ", self.claw)
+            if self.claw == 1:
+                self.claw = 0
+            elif self.claw == 0:
+                self.claw = 1
+        self.tiModel.MovementAgent.DirectControl.Safe.m4(self.rotate)
+        self.tiModel.MovementAgent.DirectControl.Safe.m1(self.move_x)
+        self.tiModel.MovementAgent.DirectControl.Safe.m2(self.move_y)
+        self.tiModel.MovementAgent.DirectControl.Safe.m3(self.claw)
         if c == ord(' '):
             self.tipos.append(TiPosition(self.tiModel.getCounterValue(1), self.tiModel.getCounterValue(2), self.tiModel.getCounterValue(3), self.tiModel.getCounterValue(4)))
             print("left button press! ", self.tipos[len(self.tipos)-1].get_str())
@@ -160,13 +172,16 @@ class TiController():
         self.txt = value_txt
         self.viewer = viewer
 
-        self.tiModel = TiModel(self.txt)
+        self.tiModel = TiModel(self.txt, v=True)
         self.txtstinp = TxtStickInput(self.txt, True)
         self.verbose = verbose
         self.tipos = list()
 
         self.viewer.screen.nodelay(1)  # set getch() non-blocking
         self.rotate = 0
+        self.move_x = 0
+        self.move_y = 0
+        self.claw = 0
 
         self.tipos.append(TiPosition(-100, -5, 1, 200))
         self.tipos.append(TiPosition(-200, -10, 0, 400))

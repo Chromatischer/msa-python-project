@@ -11,7 +11,7 @@ class InputMethode(object):
 
         print(args[0])
         if str(args[0]) not in self.valid_methods:
-            raise ValueError(str(args[0]), "is not one of: " + self.valid_methods)
+            raise ValueError(str(args[0]), "is not one of: ", self.valid_methods)
         else:
             self._inputMethode = str(args[0])
 
