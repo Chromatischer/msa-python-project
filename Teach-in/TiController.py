@@ -1,18 +1,19 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from TouchStyle import *
 from InputMethode import *
 from TiModel import *
+from TiView import *
 from TiPosition import *
 from TxtStickInput import *
 from console_utils import *
 
+import curses
 
-inputMethode = InputMethode(["file"])
 
+inputMethode = InputMethode(["curses"])
 
-class TiController(QRunnable):
+class TiController():
     def getJoystickInput(self):
         if self.txtstinp.getButton("left"):
             self.tipos.append(TiPosition(self.tiModel.getCounterValue(1), self.tiModel.getCounterValue(2), self.tiModel.getCounterValue(3), self.tiModel.getCounterValue(4)))
@@ -91,15 +92,81 @@ class TiController(QRunnable):
                     if self.verbose:
                         print(ConsoleUtils.Colors.green, "current value after run: ", self.tiModel.getCounterValue(m), " target was: ", tiPosition.get(m), ConsoleUtils.Colors.reset)
 
-    def __init__(self, value_txt: ftrobopy, verbose=False):
+    def getCursesInput(self):
+        c = self.viewer.screen.getch()
+        if c == ord('a'):
+            if self.verbose:
+                print("rotate left: ", self.rotate)
+            if self.rotate == -1:
+                self.rotate = 0
+            elif self.rotate == 0:
+                self.rotate = -1
+        if c == ord('d'):
+            if self.verbose: print("rotate right: ", self.rotate)
+            if self.rotate == 1:
+                self.rotate = 0
+            elif self.rotate == 0:
+                self.rotate = 1
+        self.tiModel.MovementAgent.DirectControl.Safe.m4(self.rotate)
+
+        if c == ord('w'):
+            if self.verbose: print("move forward")
+            self.tiModel.MovementAgent.DirectControl.Safe.m2(1)
+        else:
+            self.tiModel.MovementAgent.DirectControl.Safe.m2(0)
+        if c == ord('s'):
+            if self.verbose: print("move backwards")
+            self.tiModel.MovementAgent.DirectControl.Safe.m2(-1)
+        else:
+            self.tiModel.MovementAgent.DirectControl.Safe.m2(0)
+        if c == ord('r'):
+            if self.verbose: print("move up")
+            self.tiModel.MovementAgent.DirectControl.Safe.m1(1)
+        else:
+            self.tiModel.MovementAgent.DirectControl.Safe.m1(0)
+        if c == ord('f'):
+            if self.verbose: print("move down")
+            self.tiModel.MovementAgent.DirectControl.Safe.m1(-1)
+        else:
+            self.tiModel.MovementAgent.DirectControl.Safe.m1(0)
+        if c == ord('q'):
+            if self.verbose: print("claw close")
+            self.tiModel.MovementAgent.DirectControl.Safe.m3(-1)
+        else:
+            self.tiModel.MovementAgent.DirectControl.Safe.m3(0)
+        if c == ord('e'):
+            if self.verbose: print("claw open")
+            self.tiModel.MovementAgent.DirectControl.Safe.m3(1)
+        else:
+            self.tiModel.MovementAgent.DirectControl.Safe.m3(0)
+        if c == ord(' '):
+            self.tipos.append(TiPosition(self.tiModel.getCounterValue(1), self.tiModel.getCounterValue(2), self.tiModel.getCounterValue(3), self.tiModel.getCounterValue(4)))
+            print("left button press! ", self.tipos[len(self.tipos)-1].get_str())
+            self.txt.updateWait(0.7)
+        if c == 13:
+            self.tiModel.TestMotors.Reset.m1()
+            self.tiModel.TestMotors.Reset.m2()
+            self.tiModel.TestMotors.Reset.m3()
+            self.tiModel.TestMotors.Reset.m4()
+            inputMethode.setInputMethode("file")
+        if c == 27:
+            self.txt.stopOnline()
+            curses.endwin()
+            exit(0)
+
+    def __init__(self, value_txt: ftrobopy, viewer: TiView, verbose=False):
         super().__init__()
 
         self.txt = value_txt
+        self.viewer = viewer
 
         self.tiModel = TiModel(self.txt)
         self.txtstinp = TxtStickInput(self.txt, True)
         self.verbose = verbose
         self.tipos = list()
+
+        self.viewer.screen.nodelay(1)  # set getch() non-blocking
+        self.rotate = 0
 
         self.tipos.append(TiPosition(-100, -5, 1, 200))
         self.tipos.append(TiPosition(-200, -10, 0, 400))
@@ -109,7 +176,7 @@ class TiController(QRunnable):
 
 
     def run(self):
-        self.inputMethode: InputMethode
+        # self.inputMethode: InputMethode 
 
         print("entered main loop of TiController 100%")
 
@@ -135,3 +202,6 @@ class TiController(QRunnable):
                 self.getJoystickInput()
             elif inputMethode.getInputMethode() == "file":
                 self.getFileInput()
+            elif inputMethode.getInputMethode() == "curses":
+                self.getCursesInput()
+

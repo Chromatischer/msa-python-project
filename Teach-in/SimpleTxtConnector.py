@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import ftrobopy
 from ftrobopy import *
+from socket import timeout
 
 
 class SimpleTxtConnector:
@@ -13,7 +14,7 @@ class SimpleTxtConnector:
                 print("trying to connect to direct")
                 self.txt = ftrobopy('direct', use_extension=True)
 
-            except (TimeoutError, ConnectionRefusedError, NameError) as error:
+            except (timeout, TimeoutError, ConnectionRefusedError, NameError) as error:
                 print("failed to connect to direct: ", error)
         else:
             if not self.txt:
@@ -21,7 +22,7 @@ class SimpleTxtConnector:
                     print("trying to connect to offline USB mode")
                     self.txt = ftrobopy('192.168.7.2', use_extension=True)
 
-                except (TimeoutError, ConnectionRefusedError) as error:
+                except (timeout, TimeoutError, ConnectionRefusedError) as error:
                     print("failed to connect to offline USB mode: ", error)
 
             if not self.txt:
@@ -29,15 +30,15 @@ class SimpleTxtConnector:
                     print("trying to connect to localhost")
                     self.txt = ftrobopy('localhost', use_extension=True)
 
-                except (TimeoutError, ConnectionRefusedError) as error:
+                except (timeout, TimeoutError, ConnectionRefusedError) as error:
                     print("failed to connect to localhost: ", error)
 
             if not self.txt:
                 try:
                     print("trying to connect to W-lan host")
-                    self.txt = ftrobopy('192.168.178.72', use_extension=True)
+                    self.txt = ftrobopy('txt40.fritz.box', use_extension=True)
 
-                except (TimeoutError, ConnectionRefusedError) as error:
+                except (timeout, TimeoutError, ConnectionRefusedError) as error:
                     print("failed to connect to W-lan host: ", error)
 
         if not self.txt:
