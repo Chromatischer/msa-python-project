@@ -70,3 +70,5 @@ if __name__ == "__main__":
             txt.updateWait(time)
             m3.stop()
     #endregion
+    txt.stopOnline()
+    exit(0)

@@ -43,10 +43,10 @@ class TiModel:
         global m1, m2, m3, m4, txt, verbose, _counter_m2, _counter_m3
         txt = main_txt
         verbose = v
-        m1 = TiMotor(txt, 1, ConfigPy.min_speed_m1, ConfigPy.max_speed_m1)
+        m1 = TiMotor(txt, 1, ConfigPy.min_speed_m1, ConfigPy.max_speed_m1, verbose=False)
         m2 = txt.motor(2)
         m3 = txt.motor(3)
-        m4 = TiMotor(txt, 4, ConfigPy.min_speed_m4, ConfigPy.max_speed_m4)
+        m4 = TiMotor(txt, 4, ConfigPy.min_speed_m4, ConfigPy.max_speed_m4, verbose=False)
         _counter_m2 = 0
         _counter_m3 = 0
 
@@ -131,7 +131,7 @@ class TiModel:
                             if verbose:
                                 print("reset position value for m1: hard switch point reached!")
                     elif p < 0:
-                        if not m1.getTruePosition() < -950:
+                        if not m1.getTruePosition() < -850:
                             if verbose:
                                 print("moving m1! speed: ", round(ConfigPy.max_speed_m1 * p))
                             m1.move(p)
@@ -206,7 +206,7 @@ class TiModel:
                                 if verbose:
                                     print("not moving m2 because: stop switch state: ", bool(txt.input(1).state()))
                         elif p < 0:
-                            if not _counter_m2 < -34:
+                            if not _counter_m2 < -70:
                                 if verbose:
                                     print("moving m2: ", p)
                                 if round(ConfigPy.max_speed_m2 * p) < ConfigPy.min_speed_m2:
