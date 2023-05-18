@@ -7,13 +7,13 @@ from SimpleTxtConnector import *
 #----------------------------------------------------------------------------------------------------------------------#
 
 if __name__ == "__main__":
-    richtung: str = "runter"  # die richtung, in welche das Modell sich bewegen soll!
+    richtung: str = "rechts"  # die richtung, in welche das Modell sich bewegen soll!
 
-    time: float = 3.0  # die Zeit in sek, welche mindestens vergehen soll, bis der Motor stoppt!
+    time: float = 5.0  # die Zeit in sek, welche mindestens vergehen soll, bis der Motor stoppt!
 
     # **ACHTUNG: ES GIBT KEINE SICHERHEITSVORKEHRUNGEN, ES BESTEHT ZERSTÖRUNGSRISIKO**
     
-    speed: int = 512  # die Geschwindigkeit, mit der sich der Motor bewegen soll!
+    speed: int = 400  # die Geschwindigkeit, mit der sich der Motor bewegen soll!
 
     safety: bool = True  # verhindert das ungewollte Ausführen des Programms muss auf True gesetzt werden!
     

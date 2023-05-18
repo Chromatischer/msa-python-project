@@ -5,5 +5,5 @@ import TiView
 if __name__ == "__main__":
     ftxt = SimpleTxtConnector.SimpleTxtConnector().txt
     tiv = TiView.TiView(ftxt)
-    tic = TiController.TiController(ftxt, tiv, verbose=False)
+    tic = TiController.TiController(ftxt, tiv, verbose=True)
     tic.run()
