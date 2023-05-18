@@ -63,6 +63,11 @@ class TiController():
         # I do NOT think, this code will work, like AT ALL it is going to not work very badly!
         #                                          did it work?:
 
+        self.tiModel.TestMotors.Reset.m1()
+        self.tiModel.TestMotors.Reset.m2()
+        self.tiModel.TestMotors.Reset.m3()
+        self.tiModel.TestMotors.Reset.m4()
+
         i = 0
         print(ConsoleUtils.Colors.blue, "number of total elements in buffer: " + str(len(self.tipos)), ConsoleUtils.Colors.reset)
         for tiPosition in self.tipos:
@@ -71,7 +76,7 @@ class TiController():
                 print(ConsoleUtils.Colors.yellow, "executing run for element: ", ConsoleUtils.Colors.magenta, i, ConsoleUtils.Colors.yellow, " in tipos with values: ", tiPosition.get_str(), ConsoleUtils.Colors.reset)
             for m in range(4):
                 m = m + 1
-                if not tiPosition.get(m) == 0:
+                if not tiPosition.get(m) == self.tiModel.getCounterValue(m):
                     if self.verbose:
                         print(ConsoleUtils.Colors.yellow, "element: ", ConsoleUtils.Colors.magenta, i, ConsoleUtils.Colors.yellow, " motor: ", ConsoleUtils.Colors.magenta, m, ConsoleUtils.Colors.yellow, " current value: ", ConsoleUtils.Colors.magenta, self.tiModel.getCounterValue(m), ConsoleUtils.Colors.yellow, " target: ", ConsoleUtils.Colors.magenta, tiPosition.get(m), ConsoleUtils.Colors.reset)
 
@@ -95,79 +100,93 @@ class TiController():
                         print(ConsoleUtils.Colors.green, "current value after run: ", self.tiModel.getCounterValue(m), " target was: ", tiPosition.get(m), ConsoleUtils.Colors.reset)
 
     def getCursesInput(self):
-        print(self.tiModel.getCounterValue(1), " ", self.tiModel.getCounterValue(2), " ", self.tiModel.getCounterValue(3), " ", self.tiModel.getCounterValue(4))
+        if self.verbose:
+            print("m1: ", self.tiModel.getCounterValue(1), " m2: ", self.tiModel.getCounterValue(2), " m3: ", self.tiModel.getCounterValue(3), " m4: ", self.tiModel.getCounterValue(4))
         if select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], []):
             c = sys.stdin.read(1)
-            print("c = ", c)
+            if self.verbose:
+                print("c = ", c)
 
             if c == 'a':
-                if self.verbose: print("rotate left: ", self.rotate)
                 if self.rotate == -1:
                     self.rotate = 0
                 elif self.rotate == 0:
                     self.rotate = -1
+                print("rotate left: ", self.rotate)
             if c == 'd':
-                if self.verbose: print("rotate right: ", self.rotate)
                 if self.rotate == 1:
                     self.rotate = 0
                 elif self.rotate == 0:
                     self.rotate = 1
+                print("rotate right: ", self.rotate)
             if c == 'w':
-                if self.verbose:
-                    print("move fwd: ", self.move_x)
                 if self.move_x == -1:
                     self.move_x = 0
                 elif self.move_x == 0:
                     self.move_x = -1
+                print("move fwd: ", self.move_x)
             if c == 's':
-                if self.verbose: print("move bwd: ", self.move_x)
                 if self.move_x == 1:
                     self.move_x = 0
                 elif self.move_x == 0:
                     self.move_x = 1
+                print("move bwd: ", self.move_x)
             if c == 'r':
-                if self.verbose:
-                    print("move up: ", self.move_y)
                 if self.move_y == -1:
                     self.move_y = 0
                 elif self.move_y == 0:
                     self.move_y = -1
+                print("move up: ", self.move_y)
             if c == 'f':
-                if self.verbose: print("move down: ", self.move_y)
                 if self.move_y == 1:
                     self.move_y = 0
                 elif self.move_y == 0:
                     self.move_y = 1
+                print("move down: ", self.move_y)
             if c == 'q':
-                if self.verbose:
-                    print("claw open: ", self.claw)
                 if self.claw == -1:
                     self.claw = 0
                 elif self.claw == 0:
                     self.claw = -1
+                print("claw open: ", self.claw)
             if c == 'e':
-                if self.verbose: print("claw close: ", self.claw)
                 if self.claw == 1:
                     self.claw = 0
                 elif self.claw == 0:
                     self.claw = 1
+                print("claw close: ", self.claw)
             if c == ' ':
                 self.tipos.append(TiPosition(self.tiModel.getCounterValue(1), self.tiModel.getCounterValue(2), self.tiModel.getCounterValue(3), self.tiModel.getCounterValue(4)))
-                print("left button press! ", self.tipos[len(self.tipos)-1].get_str())
+                print("space bar pressed saving position! ", self.tipos[len(self.tipos)-1].get_str())
                 self.txt.updateWait(0.7)
+                print("position saved!")
             if c == '\x0a':
-                self.tiModel.TestMotors.Reset.m1()
-                self.tiModel.TestMotors.Reset.m2()
-                self.tiModel.TestMotors.Reset.m3()
-                self.tiModel.TestMotors.Reset.m4()
-                inputMethode.setInputMethode("file")
+                #self.tiModel.TestMotors.Reset.m1()
+                #self.tiModel.TestMotors.Reset.m2()
+                #self.tiModel.TestMotors.Reset.m3()
+                #self.tiModel.TestMotors.Reset.m4()
+                self.getFileInput()
             if c == '\x1b':
                 self.txt.stopOnline()
                 exit(0)
-        self.tiModel.MovementAgent.DirectControl.Safe.m4(self.rotate)
-        self.tiModel.MovementAgent.DirectControl.Safe.m1(self.move_x)
-        self.tiModel.MovementAgent.DirectControl.Safe.m2(self.move_y)
-        self.tiModel.MovementAgent.DirectControl.Safe.m3(self.claw)
+        if self.rotate == 0 and self.move_x == 0 and self.move_y == 0 and self.claw == 0:
+            self.tiModel.MovementAgent.DirectControl.Safe.m1(0)
+            self.tiModel.MovementAgent.DirectControl.Safe.m2(0)
+            self.tiModel.MovementAgent.DirectControl.Safe.m3(0)
+            self.tiModel.MovementAgent.DirectControl.Safe.m4(0)
+            if self.verbose: print("internal values: ", self.move_x, " ", self.move_y, " ", self.claw, " ", self.rotate, " -> resetting all motors 0!")
+        else:
+            if not self.move_x == 0:
+                self.tiModel.MovementAgent.DirectControl.Safe.m1(self.move_x)
+            if not self.move_y == 0:
+                self.tiModel.MovementAgent.DirectControl.Safe.m2(self.move_y)
+            if not self.claw == 0:
+                self.tiModel.MovementAgent.DirectControl.Safe.m3(self.claw)
+            if not self.rotate == 0:
+                self.tiModel.MovementAgent.DirectControl.Safe.m4(self.rotate)
+            if self.verbose: print("internal values: ", self.move_x, " ", self.move_y, " ", self.claw, " ", self.rotate, " -> no reset moving!")
+
+        # print("moved m1: ", self.move_x)
 
     def __init__(self, value_txt: ftrobopy, viewer: TiView, verbose=False):
         super().__init__()
@@ -185,11 +204,17 @@ class TiController():
         self.move_y = 0
         self.claw = 0
 
-        self.tipos.append(TiPosition(-100, -5, 1, 200))
-        self.tipos.append(TiPosition(-200, -10, 0, 400))
-        self.tipos.append(TiPosition(-50, 0, -1, -200))
-        self.tipos.append(TiPosition(0, 0, 0, 200))
-        self.tipos.append(TiPosition(0, 0, 0, 0))
+        self.tipos.append(TiPosition(0, -71, 0, 0))
+        self.tipos.append(TiPosition(0, -71, 1, 0))
+        self.tipos.append(TiPosition(-428, -71, 0, 0))
+        self.tipos.append(TiPosition(-731, -63, -1, 0))
+        self.tipos.append(TiPosition(-731, -19, -1, 0))
+        self.tipos.append(TiPosition(0, -19, -1, 0))
+        self.tipos.append(TiPosition(0, -19, -1, 800))
+        self.tipos.append(TiPosition(-394, -19, -1, 800))
+        self.tipos.append(TiPosition(-394, -19, 1, 800))
+        self.tipos.append(TiPosition(-29, 47, 1, 800))
+        self.tipos.append(TiPosition(-29, 47, -1, 800))
 
     def run(self):
         # self.inputMethode: InputMethode 

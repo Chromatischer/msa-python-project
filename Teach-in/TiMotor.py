@@ -1,4 +1,5 @@
 import ftrobopy
+import time
 
 
 class TiMotor(object):
@@ -19,16 +20,20 @@ class TiMotor(object):
 
     def resetTruePosition(self):
         if self._verbose:
-            print("Before: ", self._true_position)
+            pass
+            #print("Before: ", self._true_position)
         self._true_position = 0
         self._last_counter = 0
         if self._verbose:
-            print("After: ", self._true_position)
+            pass
+            #print("After: ", self._true_position)
 
     def move(self, p: float):
         if p > 1.0 or p < -1.0:
             raise ValueError("p out of bounds!")
         if p != 0:
+            if self._verbose:
+                print("p: ", p, " ", self.mot.getCurrentDistance(), " ", self.txt.getCurrentCounterValue(self.motnum - 1), " t: ", time.time_ns())
             if p > 0:
                 if self._max_speed * p < self._min_speed:
                     self._current_spd = self._min_speed
@@ -43,21 +48,28 @@ class TiMotor(object):
                 self._true_position = self._last_counter - self.mot.getCurrentDistance()
             self.mot.setSpeed(self._current_spd)
         else:
-            if self._verbose:
+            if self._verbose and self._last_counter != self._true_position:
                 print("dbg last counter: ", self._last_counter, " current position: ", self._true_position, " dbg motor current distance: ", self.mot.getCurrentDistance(), " dbg motor current spd: ", self._current_spd)
-
+                print("last pos: ", self._last_counter, " true pos: ", self._true_position)
             self._last_counter = self._true_position
             self.mot.stop()
-            self.txt.updateWait(0.2)
+            self.txt.incrCounterCmdId(self.motnum - 1)
+            self.txt.updateWait()
             i = 0
-            while self.mot.getCurrentDistance() != 1:
+            if self._verbose and self._last_counter != self._true_position:
+                print("resetting with current: ", self.mot.getCurrentDistance())
+            while not self.mot.getCurrentDistance() == 1 and not self.mot.getCurrentDistance() == 0:
                 self.txt.incrCounterCmdId(self.motnum - 1)
-                self.txt.updateWait(0.1)
+                self.txt.updateWait()
+                if self._verbose:
+                    print("attempt: ", i, " distance still: ", self.mot.getCurrentDistance())
                 i += 1
                 if i > 100:
                     self.txt.stopOnline()
                     raise OSError("lol")
-
+            if self._verbose and self._last_counter != self._true_position:
+                print("distance now: ", self.mot.getCurrentDistance())
+                print("last pos: ", self._last_counter, " true pos: ", self._true_position)
             #while not self.txt.getCurrentCounterValue((self.motnum - 1)) == 0:
             #    self.mot.setSpeed(1)
             #    self.txt.updateWait(1)

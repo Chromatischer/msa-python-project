@@ -7,7 +7,7 @@ from SimpleTxtConnector import *
 #----------------------------------------------------------------------------------------------------------------------#
 
 if __name__ == "__main__":
-    richtung: str = "runter"  # die richtung, in welche das Modell sich bewegen soll!
+    richtung: str = "links"  # die richtung, in welche das Modell sich bewegen soll!
 
     time: float = 3.0  # die Zeit in sek, welche mindestens vergehen soll, bis der Motor stoppt!
 
@@ -70,3 +70,5 @@ if __name__ == "__main__":
             txt.updateWait(time)
             m3.stop()
     #endregion
+    txt.stopOnline()
+    exit(0)
